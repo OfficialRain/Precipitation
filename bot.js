@@ -32,14 +32,14 @@ var capsModeration = {};
       case 1:
         presence.game.name = "getting prepared to fight AstralMod and JXBot";
         break;
-	  case 2:
+	case 2:
 		presence.game.name = "Minecraft";
 		break;
-	  case 3:
+	case 3:
 		presence.game.name = "rn:help for help!";
 		break;
-	  case 4:
-		presence.game.name = "DoggoBot <3";
+	case 4:
+		presence.game.name = "with DoggoBot <3";
 		break;
       }
       client.user.setPresence(presence);
