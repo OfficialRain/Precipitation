@@ -32,13 +32,13 @@ var capsModeration = {};
       case 1:
         presence.game.name = "getting prepared to fight AstralMod and JXBot";
         break;
-	case 2:
+	  case 2:
 		presence.game.name = "Minecraft";
 		break;
-	case 3:
+	  case 3:
 		presence.game.name = "rn:help for help!";
 		break;
-	case 4:
+	  case 4:
 		presence.game.name = "with DoggoBot <3";
 		break;
       }
@@ -118,14 +118,16 @@ if (client.on('message', message => {
 
 if (client.on('message', message => {
 	if (message.content === 'kys') {
-		switch (Math.floor(Math.random() * 1000) % 2) {
+		message.delete();
+		switch (Math.floor(Math.random() * 1000) % 3) {
 		case 0:
 			message.channel.send("Don't be rude!");
-			message.delete();
 			break;
 		case 1:
 			message.channel.send("Hey! You're lucky I caught that!");
-			message.delete();
+			break;
+		case 2:
+			message.channel.send("...What was that?")
 			break;
 		}
 	}
