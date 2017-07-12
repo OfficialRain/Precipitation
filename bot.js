@@ -3,6 +3,9 @@
  *   Precipitation: Bot for Moderation under many Discord Servers
  *   If you happen to find any issues with this, please report it to the GitHub issues.
  *   2017, Rain/Solexia
+ *   
+ *   Contributors:
+ *   SuperDoggo: Helped with code on some commands
  *
  * *************************************/
  
@@ -14,7 +17,7 @@ var spamModeration = {};
 var capsModeration = {};
 
    client.on('ready', () => {
-       console.log("Precipitation is now ready! It works!");
+       console.log("[i] Precipitation has been fully loaded!");
     client.setInterval(setGame, 300000);
     setGame();
    });
@@ -112,22 +115,24 @@ if (client.on('message', message => {
                      "Make sure to prefix these commands with rn:\n\n" +
 					 "- marks a mod only command, and + marks an admin only command.\n\n" +
                      "ping               Ping! Self-explanatory.\n" +
+					 "restart -          Turns the bot on and off.\n" +
 					 "poweroff +         Powers off the bot.\n" +
                      "```")
 }}));
 
 if (client.on('message', message => {
-	if (message.content === 'kys') {
+	if (message.content == "kys" || message.content == "fag" || message.content == "faggot" || message.content == "nigga" || message.content == "nigger") {
 		message.delete();
+		console.log("[!] Someone has said an offensive word!");
 		switch (Math.floor(Math.random() * 1000) % 3) {
-		case 0:
-			message.channel.send("Don't be rude!");
+		case 0: 
+			message.reply("Don't be rude!");
 			break;
 		case 1:
-			message.channel.send("Hey! You're lucky I caught that!");
+			message.reply("Hey! You're lucky I caught that!");
 			break;
 		case 2:
-			message.channel.send("...What was that?")
+			message.reply("...What was that?")
 			break;
 		}
 	}
@@ -136,7 +141,8 @@ if (client.on('message', message => {
 if (client.on('message', message => {
 	if (message.content === 'rn:poweroff') {
 		if(isAdmin(message) == true) {
-			message.channel.send("Yay, you're an admin!");
+			client.destroy();
+			process.exit();
 			} else { message.channel.send("Why are you trying to do that? You're not an admin!");
 			}
 		}
