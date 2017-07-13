@@ -42,7 +42,7 @@ function setGame() {
 			presence.game.name = "with DoggoBot <3";
 			break;
 		case 5:
-			presence.game.name = "go die GBBot and NauticalMod, I didn't do nothing."
+			presence.game.name = "gotta meme it up boi"
 			break;
       }
 	client.user.setPresence(presence);
