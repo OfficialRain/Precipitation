@@ -251,14 +251,10 @@ client.on("message", function(message){
 		//nick command (doesn't work, but does clear nickname)
 		    case "nick":
 			message.delete();
-			if(expletiveFilter == true) {
-				message.reply(":no_entry_sign: **No:** A weekly chat is happening. Give it a break.");
-				} else if (isAdmin(message)) {
+			if (isAdmin(message)) {
                 message.reply("You have a higher role than me, so I can't edit your nickname.");
-				} else if (message.author.id == 297201585090723841) {
-                message.reply("You are the server owner, I can't edit your nickname.");
 				} else {
-                var nick = message.content.substring(5);
+                var nick = message.content.substring(8);
                 if (args.length <= 1) {
                     message.reply(":white_check_mark: Success: Cleared your nickname.");
 					console.log("[i] " + message.author.username + " has reset their nickname.");
