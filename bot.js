@@ -137,7 +137,7 @@ client.on("message", function(message){
 
     if (!message.content.startsWith(prefix)) return;
 
-    var args = message.content.substring(prefix.length).split("   ");
+    var args = message.content.substring(prefix.length).split(" ");
 
     switch (args[0]) {
         //ping command
