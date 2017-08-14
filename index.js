@@ -24,6 +24,7 @@ const fs = require("fs");
 const client = new Discord.Client();
 const blessed = require('blessed');
 const moment = require('moment');
+const readline = require('readline');
 const games = require('./games.js');
 const config = require('./config.json');
 client.commands = new Discord.Collection();
@@ -34,9 +35,44 @@ var suggestState = {};
 
 // Colored console
 var fgBlue = "\x1b[1m\x1b[34m"
+var fgYellow = "\x1b[1m\x1b[33m"
 var fgRed = "\x1b[1m\x1b[31m"
 var fgGreen = "\x1b[1m\x1b[32m"
+var fgWhite = "\x1b[1m\x1b[37m"
 var reset = "\x1b[0m"
+
+// Exceptions and Errors
+var exception = "**:zap: EXCEPTION** "
+var error = "**:no_entry_sign: ERROR** "
+
+// Spam limiting
+var lastMessages = {};
+var sameMessageCount = {};
+var spamModeration = true;
+
+var stdinInterface = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+    terminal: false
+});
+
+stdinInterface.on("line", function(line) {
+    //Input received!
+	
+    var lLine = line.toLowerCase();
+    if (lLine == "help") {
+        console.log(fgWhite + "Precipitation Console Commands: \n" + 
+							  "ginfo [guild]             Sends info about a guild Precipitation is in." + reset);
+    } else if(lLine == "ginfo") {
+		console.log("Coming soon!")
+	} else if(lLine == "say")  {
+		console.log("Coming soon!")
+	} else {
+        console.log(fgRed + "[X] Unknown command. Use \"help\" to get help." + reset);
+    }
+});
+
+console.log(fgGreen + "[>] Welcome to Precipitation " + config.version + "!")
 
 client.login(config.bot_token);
 
@@ -115,7 +151,52 @@ fs.readdir("./modules/", (err, files) => {
 
 
 client.on('message', function(message) {
-	
+//Spam limiting
+var msg = message.content;
+if(spamModeration && !message.author.bot) {
+	if (lastMessages[message.author.id] != msg) {
+		sameMessageCount[message.author.id] = 0;
+}
+		lastMessages[message.author.id] = msg
+		sameMessageCount[message.author.id] += 1;
+		
+	if(lastMessages[message.author.id] == msg && sameMessageCount[message.author.id] == 8) {
+		var channel = null;
+		message.reply("That's it. The staff members have been notified.");
+		message.delete();
+		if(message.guild.id == 297218185374203904) {
+			client.channels.get("339661768294924288").sendMessage(getUserString(message.author) + " was spamming on channel <#" + message.channel.id + ">.");
+		} else if(message.guild.id == 336487228228370432) {
+			client.channels.get("339687174511263745").sendMessage(getUserString(message.author) + " was spamming on channel <#" + message.channel.id + ">.");
+		} else if(message.guild.id == 331659662954987543) {
+			client.channels.get("341017220819976202").sendMessage(getUserString(message.author) + " was spamming on channel <#" + message.channel.id + ">.");
+		}
+	} else if(lastMessages[message.author.id] == msg && sameMessageCount[message.author.id] > 8) {
+		message.delete();
+	} else if(lastMessages[message.author.id] == msg && sameMessageCount[message.author.id] > 3) {
+		message.delete();
+		switch (Math.floor(Math.random() * 1000) % 6) {
+			case 0:
+				message.reply("Stop spamming!")
+				break;
+			case 1:
+				message.reply("Don't spam!")
+				break;
+			case 2:
+				message.reply("And I thought you were better than that.")
+				break;
+			case 3:
+				message.reply("Can you, like, not spam? Thanks.")
+				break;
+			case 4:
+				message.reply("OKAY. I think we get it now.")
+				break;
+			case 5:
+				message.reply("Why do you need to spam?")
+				break;
+		}
+	}
+}
 })
 
 client.on('messageDelete', function(message) {
@@ -218,14 +299,19 @@ client.on('messageUpdate', function(oldMessage, newMessage) {
     }
 });
 
+client.on("guildCreate", guild => {
+	// This event triggers when the bot joins a guild.
+	console.log(`[i] New guild: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`);
+});
+
 client.on("message", async message => { // Command Processing
 	try {
     if (message.author.bot) return; // Ignores bots
     if (message.channel.type === "dm") return; //Ignores the command if it's in a DM
 
-    let array = message.content.split(" ");
+    let array = message.content.split(/[ ]+/)
     let command = array[0];
-    let args  = array.slice(1);
+    let args = array.slice(1);
 
     if (!command.startsWith(config.prefix)) return;
 
@@ -234,15 +320,14 @@ client.on("message", async message => { // Command Processing
     if (cmd) {
         cmd.run(client, message, args);
     } else {
-        message.channel.send("**Error:** Unknown command. ")
+        message.chanel.send(error + "Unknown command. ")
     }
 	} catch(err) {
-		let embed = new Discord.RichEmbed()
-		.setAuthor("Error!");
-		embed.setDescription("An error has occured: " + err)
+		message.channel.send(exception + err);
+		console.log(fgYellow + "[!] Exception caught: " + err + reset)
 	}
 });
 
 process.on('unhandledRejection', function(err, p) {
-    console.log(fgRed + "[X] An unhandled rejection has occured: " + err.stack + reset);
+    console.log(fgRed + "[X] An unhandled rejection has occurred: " + err.stack + reset);
 });
