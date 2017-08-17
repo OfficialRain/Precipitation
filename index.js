@@ -81,7 +81,8 @@ function setGame() {
         status: 'online',
         afk: false,
         game: {
-            name: games.list[Math.floor(Math.random() * games.list.length)]
+            name: games.list[Math.floor(Math.random() * games.list.length)],
+	    type: 0
         }
     })
 }
